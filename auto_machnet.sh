@@ -170,8 +170,9 @@ start_machnet() {
         fi
     fi
 
-    # Run machnet.sh in background, redirect logs
-    ./machnet.sh --mac "$MACHNET_MAC" --ip "$MACHNET_IP" > machnet.log 2>&1 &
+    # Run machnet.sh in background; detach stdin (< /dev/null) so the docker
+    # container it launches can't capture our terminal's keystrokes.
+    ./machnet.sh --mac "$MACHNET_MAC" --ip "$MACHNET_IP" < /dev/null > machnet.log 2>&1 &
     MACHNET_PID=$!
     info "Machnet sidecar started with PID $MACHNET_PID (logs: machnet.log)"
 
