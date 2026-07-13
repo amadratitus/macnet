@@ -1,5 +1,5 @@
 #!/bin/bash
-# auto_machnet.sh - One-command Machnet deployment on Azure
+# Machnet deployment on Azure
 # Usage: ./auto_machnet.sh
 
 set -euo pipefail
