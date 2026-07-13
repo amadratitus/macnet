@@ -233,6 +233,22 @@ run_benchmark() {
         # Loop over message sizes and inflight counts
         for SIZE in 64 256 1024 4096; do
             for INFLIGHT in 1 16 128 512; do
+                # The sidecar can die after several client attach/detach
+                # cycles; restart it if its control socket is gone.
+                if [ ! -S /var/run/machnet/machnet_ctrl.sock ]; then
+                    warn "Sidecar died; restarting it..."
+                    setsid ./machnet.sh --mac "$MACHNET_MAC" --ip "$MACHNET_IP" < /dev/null >> machnet.log 2>&1 &
+                    MACHNET_PID=$!
+                    for _w in $(seq 1 30); do
+                        [ -S /var/run/machnet/machnet_ctrl.sock ] && break
+                        sleep 1
+                    done
+                    if [ ! -S /var/run/machnet/machnet_ctrl.sock ]; then
+                        error "Sidecar failed to restart; aborting sweep. See machnet.log"
+                        break 2
+                    fi
+                    ok "Sidecar back up."
+                fi
                 echo "-----------------------------------" | tee -a "$RESULT_FILE"
                 echo "SIZE=${SIZE}B, INFLIGHT=${INFLIGHT}" | tee -a "$RESULT_FILE"
                 echo "-----------------------------------" | tee -a "$RESULT_FILE"
