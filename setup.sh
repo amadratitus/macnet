@@ -1,5 +1,5 @@
 #!/bin/bash
-# setup.sh - Prepare a fresh Azure Ubuntu VM for Machnet and launch the benchmark script.
+# Prepare a fresh Azure Ubuntu VM for Machnet and launch the benchmark script.
 # Run this ON EACH VM after cloning your repo:
 #   export GITHUB_USER=your_username
 #   export GITHUB_PAT=ghp_xxxxxxxxxxxx
